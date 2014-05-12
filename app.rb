@@ -5,22 +5,29 @@ PORT = ENV['PORT'] || 4567
 
 set :port, PORT
 
-authorized_keys = []
+helpers do
+  def protected!
+    return if authorized?
+    headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+    halt 401, "Not authorized\n"
+  end
 
-use Rack::Auth::Basic, "Restricted Area" do |api_key, _|
-  $stderr.puts "BASIC : #{api_key}"
-  authorized_keys.include?(api_key)
+  def authorized?
+    @auth ||= Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? && @auth.basic? && @auth.credentials && Clients.authorized_keys.include?(@auth.credentials.first)
+  end
 end
 
 before { content_type :json }
 
 get '/api/widgets' do
+  protected!
   Widgets.all.to_json
 end
 
 post '/api/clients' do
   client = { key: SecureRandom.hex(32) }
-  authorized_keys << client[:key]
+  Clients.authorized_keys << client[:key]
   client.to_json
 end
 
@@ -30,5 +37,11 @@ class Widgets
       {name: 'Foo Widget', price_cents: 1567},
       {name: 'Bar Widget', price_cents: 4321}
     ]
+  end
+end
+
+class Clients
+  def self.authorized_keys
+    @@authorized_keys ||= []
   end
 end
