@@ -1,4 +1,6 @@
-This is an example API application accompanying the [Testing Multiple Applications](http://localhost:4000/blog/2014/05/12/testing-multiple-applications/) blog post. You'll find more detail there.
+This is an example API application accompanying the [Continuous Integration For Service-Oriented Architectures](http://artsy.github.io/blog/2014/05/12/continuous-integration-for-service-oriented-architectures/) blog post. You'll find more detail there.
+
+See also the companion repositories, [multiapp_example-web](https://github.com/joeyAghion/multiapp_example-web) and [multiapp_example-tests](https://github.com/joeyAghion/multiapp_example-tests).
 
 &copy; Joey Aghion, [Artsy](https://artsy.net)
 
