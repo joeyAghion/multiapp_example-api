@@ -25,6 +25,13 @@ get '/api/widgets' do
   Widgets.all.to_json
 end
 
+post '/api/widgets' do
+  protected!
+  widget = {name: params[:name], price_cents: params[:price_cents].to_i}
+  Widgets.all << widget
+  widget.to_json
+end
+
 post '/api/clients' do
   client = { key: SecureRandom.hex(32) }
   Clients.authorized_keys << client[:key]
@@ -33,10 +40,7 @@ end
 
 class Widgets
   def self.all
-    [
-      {name: 'Foo Widget', price_cents: 1567},
-      {name: 'Bar Widget', price_cents: 4321}
-    ]
+    @@all ||= []
   end
 end
 
